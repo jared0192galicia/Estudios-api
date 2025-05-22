@@ -1,13 +1,19 @@
 import { Hono } from 'hono';
-import { authRoutes } from '@modules/auth/routes';
+import auth from '@modules/auth/routes';
+import welcomeMessage from '@lib/welcome';
 
+// Aplicación Hono para manejar rutas
 const app = new Hono();
 
-app.route('/auth', authRoutes);
+// Rutas de autenticación
+app.route('/sesion', auth);
 
-export default app;
-
+//  Inicializa el servidor
 Bun.serve({
   port: 3001,
   fetch: app.fetch,
 });
+
+welcomeMessage();
+
+export default app;

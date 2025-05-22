@@ -1,6 +1,9 @@
 import { Hono } from 'hono';
 import { loginController } from './controller';
 
-export const authRoutes = new Hono();
+const authRoutes = new Hono();
 
+// Ruta para el inicio de sesión
 authRoutes.post('/login', loginController);
+
+export default authRoutes;
