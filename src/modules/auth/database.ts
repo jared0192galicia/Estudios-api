@@ -1,10 +1,10 @@
 import { db } from "@connections/connections";
-import { cuenta } from "@database/usuario";
+import { cuenta } from "@database/cuenta";
 import { eq } from 'drizzle-orm';
 
-export async function queryGetAccoutByEmail(email: string) {
- const [data] = await db.select().from(cuenta).where(eq(cuenta.email, email));
- console.log("🚀 ~ data:", data)
+export async function queryGetAccoutByEmail(user: string) {
+  const [data] = await db.select().from(cuenta).where(eq(cuenta.usuario, user));
+  console.log('🚀 ~ data:', data);
 
- return data;
+  return data;
 }

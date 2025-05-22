@@ -2,8 +2,7 @@ export type Token = {
   exp: number;
   samesite: string;
   id: number;
-  user: string;
-  email: string;
   name: string;
+  username: string;
   levelAccess: number;
 };

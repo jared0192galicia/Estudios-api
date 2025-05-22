@@ -1,43 +1,37 @@
-// import type { Token } from '@types/auth';
+import { createToken, getAuthSecret, type AuthSecret } from '@lib/jwt';
+import type { Token } from '../../types/auth';
 import { queryGetAccoutByEmail } from './database';
 
 // src/modules/auth/controller.ts
 export async function loginController(context: any) {
   const body = await context.req.json();
-  const { email, password } = body;
+  const { username, password } = body;
 
-  const account = await queryGetAccoutByEmail(email);
+  const account = await queryGetAccoutByEmail(username);
   if (!account.clave) {
-    return context.json(
-      { success: false, message: 'Correo invalido' },
-      401
-    );
+    return context.json({ success: false, message: 'Correo invalido' }, 401);
   }
 
-  const { id, email: user, idNivelAcceso: levelAccess,  } = account;
+  const { id, idNivelAcceso: levelAccess, nombre: name } = account;
 
   const passwordMatch = await Bun.password.verify(account.clave, password);
-  
-  // if (!passwordMatch)
-  //   return context.json({message: 'Contraseña invalida'}, 401);
 
-  // const expirationTime: number = Math.floor(Date.now() / 1000) + 60 * 300;
+  if (!passwordMatch)
+    return context.json({ message: 'Contraseña invalida' }, 401);
 
-  // const payload: Token = {
-  //   exp: expirationTime,
-  //   samesite: 'none',
-  //   id,
-  //   user: user || '',
-  //   email: email || '',
-  //   name: name || '',
-  //   levelAccess: levelAccess || 0,
-  // };
+  const expirationTime: number = Math.floor(Date.now() / 1000) + 60 * 300;
 
-  // const secret: AuthSecret = getAuthSecret(Bun.env.ACCESS_TOKEN);
-  // const token: string = await createToken(payload, secret);
+  const payload: Token = {
+    id,
+    exp: expirationTime,
+    samesite: 'none',
+    username,
+    name: name || '',
+    levelAccess: levelAccess || 0,
+  };
 
-  // return context.json({ accessToken: token }, OK);
+  const secret: AuthSecret = getAuthSecret(Bun.env.ACCESS_TOKEN || '');
+  const token: string = await createToken(payload, secret);
 
-
-  return context.json({ success: true, token: 'abc123' });
+  return context.json({ accessToken: token }, 200);
 }
