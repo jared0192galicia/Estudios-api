@@ -1,27 +1,29 @@
 import { createToken, getAuthSecret, type AuthSecret } from '@lib/jwt';
 import type { Token } from '../../types/auth';
-import { queryGetAccoutByEmail } from './database';
+import {
+  queryGetAccoutByEmail,
+  queryInsertAccout,
+} from './database';
 
 // src/modules/auth/controller.ts
 export async function loginController(context: any) {
   const body = await context.req.json();
-  console.log("🚀 ~ body:", body)
   const { username, password } = body;
-  
-  const account = await queryGetAccoutByEmail(username);
-  if (!account.clave) {
+
+  const account: any = await queryGetAccoutByEmail(username);
+  if (!account) {
     return context.json({ success: false, message: 'Correo invalido' }, 401);
   }
-  
+
   const { id, nombre: name } = account;
-  
-  const passwordMatch = await Bun.password.verify(account.clave, password);
-  
+
+  const passwordMatch = await Bun.password.verify(password, account.clave);
+
   if (!passwordMatch)
     return context.json({ message: 'Contraseña invalida' }, 401);
-  
+
   const expirationTime: number = Math.floor(Date.now() / 1000) + 60 * 300;
-  
+
   const payload: Token = {
     id,
     exp: expirationTime,
@@ -29,66 +31,67 @@ export async function loginController(context: any) {
     username,
     name: name || '',
   };
-  
+
   const secret: AuthSecret = getAuthSecret(Bun.env.ACCESS_TOKEN || '');
   const token: string = await createToken(payload, secret);
-  
+
   return context.json({ accessToken: token }, 200);
 }
 
-
 export async function createController(c: any) {
-  // Validar datos de entrada con Zod
-  const body = await c.req.json();
-  // const schema = z.object({
-  //   email: z.string().email(),
-  //   password: z.string().min(8),
-  //   name: z.string().min(1),
-  // });
+  try {
+    const body = await c.req.json();
+    const { username, password, name } = body;
 
-  // const parse = schema.safeParse(body);
+    if (!username || !password || !name)
+      return c.json({ error: 'Faltan datos' }, 400);
 
-  // if (!parse.success) {
-  //   return c.json(
-  //     { error: 'Datos inválidos', details: parse.error.format() },
-  //     400
-  //   );
-  // }
+    const existingUser = await queryGetAccoutByEmail(username);
 
-  const { username, password, name } = body;
+    if (existingUser) return c.json({ error: 'El usuario ya existe' }, 400);
 
-  // Simula guardado en base de datos (aquí deberías hashear el password y guardar el usuario)
-  const user = {
-    username,
-    name,
-    password: password,
-  };
+    const hash: string = await Bun.password.hash(password);
 
-  const expirationTime: number = Math.floor(Date.now() / 1000) + 60 * 300;
-  // Payload para el token
-  const payload = {
-    id: 1,
-    exp: expirationTime,
-    samesite:'none',
-    name: user.name,
-    username: user.username,
-  };
+    const user = {
+      usuario: username,
+      nombre: name,
+      clave: hash,
+    };
 
-  // Clave secreta desde variable de entorno
-  const rawSecret = Bun.env.AUTH_SECRET;
-  if (!rawSecret) {
-    return c.json(
-      { error: 'Servidor sin clave de autenticación configurada' },
-      500
-    );
+    const { id } = await queryInsertAccout(user);
+
+    const expirationTime: number = Math.floor(Date.now() / 1000) + 60 * 300;
+
+    // Clave secreta desde variable de entorno
+    const rawSecret = Bun.env.ACCESS_TOKEN;
+    if (!rawSecret) {
+      return c.json(
+        { error: 'Servidor sin clave de autenticación configurada' },
+        500
+      );
+    }
+
+    // Payload para el token
+    const payload = {
+      id,
+      exp: expirationTime,
+      samesite: 'none',
+      name: user.nombre,
+      username: user.usuario,
+    };
+
+    const authSecret = getAuthSecret(rawSecret);
+
+    const token = await createToken(payload, authSecret);
+    console.log('🚀 ~ token:', token);
+
+    return c.json({
+      message: 'Cuenta creada correctamente',
+      user,
+      token,
+    });
+  } catch (error) {
+    console.log(error);
+    return c.json({ error: 'Error interno del servidor' }, 500);
   }
-
-  const authSecret = getAuthSecret(rawSecret);
-  const token = await createToken(payload, authSecret);
-
-  return c.json({
-    message: 'Cuenta creada correctamente',
-    user,
-    token,
-  });
 }
