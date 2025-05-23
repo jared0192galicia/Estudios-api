@@ -4,6 +4,6 @@ import { loginController } from './controller';
 const authRoutes = new Hono();
 
 // Ruta para el inicio de sesión
-authRoutes.get('/login', loginController);
+authRoutes.post('/login', loginController);
 
 export default authRoutes;

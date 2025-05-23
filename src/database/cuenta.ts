@@ -1,4 +1,4 @@
-import { integer, pgTable, serial, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, serial, varchar } from 'drizzle-orm/pg-core';
 
 export const nivelAcceso = pgTable('nivelAcceso', {
   idNivelAcceso: serial('idNivelAcceso').primaryKey(),
