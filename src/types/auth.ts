@@ -4,5 +4,4 @@ export type Token = {
   id: number;
   name: string;
   username: string;
-  levelAccess: number;
 };

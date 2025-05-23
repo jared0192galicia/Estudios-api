@@ -7,7 +7,6 @@ export const nivelAcceso = pgTable('nivelAcceso', {
 
 export const cuenta = pgTable('cuenta', {
   id: serial('id').primaryKey(),
-  idNivelAcceso: integer('idNivelAcceso').references(() => nivelAcceso.idNivelAcceso),
   nombre: varchar('nombre', { length: 255 }),
   usuario: varchar('usuario', { length: 255 }).unique(),
   clave: varchar('clave', { length: 255 }),
