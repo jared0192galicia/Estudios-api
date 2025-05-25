@@ -1,5 +1,5 @@
 import { createToken, getAuthSecret, type AuthSecret } from '@lib/jwt';
-import type { Token } from '../../types/auth';
+import type { Token } from '@my-types/auth';
 import {
   queryGetAccoutByEmail,
   queryInsertAccout,

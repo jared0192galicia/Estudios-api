@@ -1,6 +1,9 @@
 import { Hono } from 'hono';
-import { loginController } from './controller';
+import { getAllController, uploadController } from './controller';
 
-export const authRoutes = new Hono();
+const dashboardRoutes = new Hono();
 
-authRoutes.post('/login', loginController);
+dashboardRoutes.post('/upload-excel', uploadController);
+dashboardRoutes.get('/data', getAllController);
+
+export default dashboardRoutes;
