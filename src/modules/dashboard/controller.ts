@@ -77,7 +77,7 @@ function convertFechaDDMMYYToISO(fechaStr: string): string {
 function mapParsedToResultadosAD(parsed: ParsedRow[]): ResultadoAD[] {
   return parsed.map((row, i) => {
     return {
-      matricula: `AUTO-${i + 1}`, // o genera con UUID u otro valor real si lo tienes
+      matricula: row['Matrícula'],
       apPaterno: row['Ap_Paterno'] ?? '',
       apMaterno: row['Ap_Materno'] ?? '',
       nombres: row['Nombre(s)'] ?? '',

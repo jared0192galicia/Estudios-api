@@ -2,7 +2,8 @@ import { date } from 'drizzle-orm/pg-core';
 import { integer, pgTable, serial, varchar } from 'drizzle-orm/pg-core';
 
 export const resultados_AD = pgTable('resultados_AD', {
-    matricula: varchar('matricula', {length: 255}).primaryKey(),
+    id: serial('id').primaryKey(),
+    matricula: varchar('matricula', {length: 255}),
     apPaterno: varchar('apPaterno', {length: 255}),
     apMaterno: varchar('apMaterno', {length: 255}),
     nombres: varchar('nombres', {length: 255}),

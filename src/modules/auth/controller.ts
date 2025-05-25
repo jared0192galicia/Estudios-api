@@ -1,9 +1,6 @@
-import { createToken, getAuthSecret, type AuthSecret } from '@lib/jwt';
+import { createToken, getAuthSecret, verify, type AuthSecret } from '@lib/jwt';
 import type { Token } from '@my-types/auth';
-import {
-  queryGetAccoutByEmail,
-  queryInsertAccout,
-} from './database';
+import { queryGetAccoutByEmail, queryInsertAccout } from './database';
 
 // src/modules/auth/controller.ts
 export async function loginController(context: any) {
@@ -83,7 +80,6 @@ export async function createController(c: any) {
     const authSecret = getAuthSecret(rawSecret);
 
     const token = await createToken(payload, authSecret);
-    console.log('🚀 ~ token:', token);
 
     return c.json({
       message: 'Cuenta creada correctamente',
@@ -93,5 +89,25 @@ export async function createController(c: any) {
   } catch (error) {
     console.log(error);
     return c.json({ error: 'Error interno del servidor' }, 500);
+  }
+}
+
+export async function auth(context: any) {
+  try {
+    const authHeader = context.req.header('authorization');
+
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) return context.json({ message: 'no token' }, 401);
+
+    const secret = getAuthSecret(Bun.env.ACCESS_TOKEN || '');
+    const verified = await verify(token, secret);
+
+    if (!verified) return context.json({ message: 'invalid token' }, 401);
+
+    return context.json({ message: 'valid token' }, 200);
+  } catch (error) {
+    console.error('Error en el controlador de autenticación:', error);
+    return context.json({ message: 'Error interno del servidor' }, 500);
   }
 }
