@@ -6,5 +6,6 @@ const dashboardRoutes = new Hono();
 
 dashboardRoutes.post('/upload-excel', protect(), uploadController);
 dashboardRoutes.get('/data', protect(), getAllController);
+dashboardRoutes.get('/file', protect(), getAllController);
 
 export default dashboardRoutes;

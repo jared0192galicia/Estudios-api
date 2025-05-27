@@ -1,8 +1,12 @@
 import { read, utils } from "xlsx";
 import { queryInsertDataPerson, querySelectDataPerson } from "./database";
 import type { ParsedRow, ResultadoAD } from '@my-types/dashboard';
+import { readFile } from 'fs/promises';
+import puppeteer from 'puppeteer';
+import Handlebars from 'handlebars';
+import { join } from 'path';
 
-export async function uploadController(context: any) {
+export async function uploadController(context: any) {  
   const formData = await context.req.formData();
   const file = formData.get('file') as File;
 
@@ -90,5 +94,47 @@ function mapParsedToResultadosAD(parsed: ParsedRow[]): ResultadoAD[] {
       opioides: row['Opioides'] ?? '',
       cannabis: row['Cannabis (THC)'] ?? '',
     };
+  });
+}
+
+export async function generarPDFController(context: any) {
+
+  // Recuperar parámetros del request usando Hono (query params en GET)
+  const { cliente, fecha, total, productos } = context.req.query();
+  // Si productos viene como string, parsear a JSON
+  // Simulación de datos (puedes recibirlos desde el body o query)
+  const datos = {
+    cliente: 'Juan Pérez',
+    fecha: '2025-05-27',
+    total: '$250.00',
+    productos: [
+      { nombre: 'Camisa', precio: '$100.00' },
+      { nombre: 'Pantalón', precio: '$150.00' },
+    ],
+  };
+
+  // Cargar plantilla Handlebars
+  const templatePath = join(import.meta.dir, '../templates/factura.hbs');
+  const templateContent = await readFile(templatePath, 'utf-8');
+  const template = Handlebars.compile(templateContent);
+
+  // Generar HTML desde la plantilla
+  const html = template(datos);
+
+  // Generar PDF con Puppeteer
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.setContent(html, { waitUntil: 'networkidle0' });
+
+  const pdfBuffer = await page.pdf({ format: 'A4' });
+
+  await browser.close();
+
+  // Retornar PDF al frontend
+  return new Response(pdfBuffer, {
+    headers: {
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'inline; filename="factura.pdf"',
+    },
   });
 }
