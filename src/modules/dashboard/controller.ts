@@ -1,12 +1,17 @@
-import { read, utils } from "xlsx";
-import { queryInsertDataPerson, querySelectDataPerson } from "./database";
+import { read, utils } from 'xlsx';
+import {
+  queryInsertDataPerson,
+  querySelectDataPerson,
+  querySelectDataPersonByIds,
+} from './database';
 import type { ParsedRow, ResultadoAD } from '@my-types/dashboard';
 import { readFile } from 'fs/promises';
 import puppeteer from 'puppeteer';
 import Handlebars from 'handlebars';
 import { join } from 'path';
+import fs from 'fs';
 
-export async function uploadController(context: any) {  
+export async function uploadController(context: any) {
   const formData = await context.req.formData();
   const file = formData.get('file') as File;
 
@@ -35,27 +40,27 @@ export async function uploadController(context: any) {
   });
 
   const resultadosAD: ResultadoAD[] = mapParsedToResultadosAD(parsed);
-  
-  for (const row  of resultadosAD) {
+
+  for (const row of resultadosAD) {
     await queryInsertDataPerson(row);
   }
-  
+
   return context.json({ success: true, data: parsed }, 200);
 }
-
 
 export async function getAllController(context: any) {
   try {
     const data = await querySelectDataPerson();
 
-    if (!data || data.length === 0) 
-      return context.json([], 204);
+    if (!data || data.length === 0) return context.json([], 204);
 
     return context.json(data, 200);
   } catch (error) {
     console.log('Error:', error);
-    return context.json({ success: false, message: 'Error al obtener datos' }, 500);
-    
+    return context.json(
+      { success: false, message: 'Error al obtener datos' },
+      500
+    );
   }
 }
 
@@ -98,28 +103,30 @@ function mapParsedToResultadosAD(parsed: ParsedRow[]): ResultadoAD[] {
 }
 
 export async function generarPDFController(context: any) {
-
   // Recuperar parámetros del request usando Hono (query params en GET)
-  const { cliente, fecha, total, productos } = context.req.query();
-  // Si productos viene como string, parsear a JSON
-  // Simulación de datos (puedes recibirlos desde el body o query)
-  const datos = {
-    cliente: 'Juan Pérez',
-    fecha: '2025-05-27',
-    total: '$250.00',
-    productos: [
-      { nombre: 'Camisa', precio: '$100.00' },
-      { nombre: 'Pantalón', precio: '$150.00' },
-    ],
-  };
+  const params = context.req.query();
+  const idsParam = params.ids ?? '';
+  const ids = idsParam
+    .split(',')
+    .map((id: any) => id.trim())
+    .filter((id: any) => id.length > 0);
+
+  const data = await querySelectDataPersonByIds(ids);
+
+  const datos = data[0];
 
   // Cargar plantilla Handlebars
-  const templatePath = join(import.meta.dir, '../templates/factura.hbs');
+  const templatePath = join(import.meta.dir, '../../templates/FormatoPDF.hbs');
   const templateContent = await readFile(templatePath, 'utf-8');
   const template = Handlebars.compile(templateContent);
 
-  // Generar HTML desde la plantilla
-  const html = template(datos);
+  const imagenBase64 = fs.readFileSync('./public/image.png', 'base64');
+  // const html = template({ ...datos, imagenBase64 });
+
+  // Generar HTML concatenado para todos los registros
+  const html = data
+    .map((datos: any) => template({ ...datos, imagenBase64 }))
+    .join('<div style="page-break-after: always;"></div>'); // saltos de página
 
   // Generar PDF con Puppeteer
   const browser = await puppeteer.launch();

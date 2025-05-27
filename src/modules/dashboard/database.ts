@@ -1,6 +1,7 @@
 import { db } from '@connections/connections';
 import { resultados_AD } from '@database/resultados_AD'; // Replace 'correctExportName' with the actual export name
 import { eq } from 'drizzle-orm';
+import { inArray } from 'drizzle-orm';
 
 export async function queryInsertDataPerson({
   matricula,
@@ -38,6 +39,15 @@ export async function queryInsertDataPerson({
 
 export async function querySelectDataPerson() {
   const data = await db.select().from(resultados_AD);
+  return data;
+}
+
+export async function querySelectDataPersonByIds(ids: any[]) {
+  // const whereClause = inArray(resultados_AD.id, adis);
+  const data = await db
+    .select()
+    .from(resultados_AD)
+    .where(inArray(resultados_AD.id, ids));
   return data;
 }
 

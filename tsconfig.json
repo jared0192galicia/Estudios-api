@@ -13,6 +13,7 @@
       "@lib/*": ["./src/lib/*"],
       "@connections/*": ["./src/config/connections.ts"],
       "@database/*": ["./src/database/*"],
+      "@templates/*": ["./src/templates/*"],
       "@my-types/*": ["./src/types/*"]
     },
 
