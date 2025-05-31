@@ -84,7 +84,7 @@ function convertFechaDDMMYYToISO(fechaStr: string): string {
 }
 
 function mapParsedToResultadosAD(parsed: ParsedRow[]): ResultadoAD[] {
-  return parsed.map((row, i) => {
+  return parsed.map((row) => {
     return {
       matricula: row['Matrícula'],
       apPaterno: row['Ap_Paterno'] ?? '',
@@ -95,7 +95,7 @@ function mapParsedToResultadosAD(parsed: ParsedRow[]): ResultadoAD[] {
       fecha: convertFechaDDMMYYToISO(row['Fecha de valoración']),
       cocaina: row['Cocaína'] ?? '',
       anfetamina: row['Anfetaminas'] ?? '',
-      metanfetamina: row['Metaanfetaminas'] ?? '',
+      metanfetamina: row['Metanfetaminas'] ?? '-1',
       opioides: row['Opioides'] ?? '',
       cannabis: row['Cannabis (THC)'] ?? '',
     };
@@ -113,8 +113,6 @@ export async function generarPDFController(context: any) {
 
   const data = await querySelectDataPersonByIds(ids);
 
-  const datos = data[0];
-
   // Cargar plantilla Handlebars
   const templatePath = join(import.meta.dir, '../../templates/FormatoPDF.hbs');
   const templateContent = await readFile(templatePath, 'utf-8');
@@ -125,8 +123,12 @@ export async function generarPDFController(context: any) {
 
   // Generar HTML concatenado para todos los registros
   const html = data
-    .map((datos: any) => template({ ...datos, imagenBase64 }))
-    .join('<div style="page-break-after: always;"></div>'); // saltos de página
+    .map((datos: any) => {
+      if (!datos.cannabis) datos.cannabis = '----';
+
+      return template({ ...datos, imagenBase64 });
+    })
+    .join('<div style="page-break-after: always;"></div>');
 
   // Generar PDF con Puppeteer
   const browser = await puppeteer.launch();

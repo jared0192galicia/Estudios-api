@@ -1,10 +1,11 @@
 <div
     style="width: 100%; max-width: 800px; margin: 0 auto; padding: 2em; box-sizing: border-box; font-family: Arial, sans-serif; line-height: 1.5; color: #000;">
-    <header style="width: 100%; display: flex; justify-content: flex-start; align-items: center;">
-        <img src="data:image/png;base64,{{imagenBase64}}" alt="Logo UNSIS" style="width: 80px; display: block; position: absolute; top: 25px;" />
-        {{!-- <div style="width: 30px;"></div> --}}
-        <h1 style="font-size: 1.8em; text-align: center; margin-top: 0.5em; width: 100%; text-align: center;">" Universidad de la Sierra Sur "</h1>
+    <header style="position: relative; width: 100%; padding: 1em 0; text-align: center;">
+        <img src="data:image/png;base64,{{imagenBase64}}" alt="Logo UNSIS"
+            style="width: 80px; position: absolute; left: 0; top: 50%; transform: translateY(-50%);" />
+        <h1 style="font-size: 1.8em; margin: 0;">" Universidad de la Sierra Sur "</h1>
     </header>
+
 
     <div style="margin-top: 2em; display: flex; flex-direction: row; gap: 0.5em;">
         <strong>Paciente:</strong>
@@ -36,7 +37,7 @@
         <div
             style="display: flex; flex-direction: row; justify-content: space-between; font-size: 14px; border-bottom: 1px solid #000; width: 100%;  position: relative;">
             <p style="width: 33.33%; margin: 0.3em; text-align: left;">COCAÍNA</p>
-            <p style="width: 33.33%; margin: 0.3em; text-align: center;">{{cocaina}}</p>
+            <p style="width: 33.33%; margin: 0.3em; padding-bottom: 3px; text-align: center;">{{cocaina}}</p>
             <p style="width: 33.33%; margin: 0.3em; text-align: right;">NEGATIVO</p>
             <div style="content: ''; position: absolute; left: 0; right: 0; bottom: 0.5em; height: 2px; background: #000;">
             </div>
@@ -44,7 +45,7 @@
         <div
             style="display: flex; flex-direction: row; justify-content: space-between; font-size: 14px; border-bottom: 1px solid #000; width: 100%;  position: relative;">
             <p style="width: 33.33%; margin: 0.3em; text-align: left;">ANFETAMINAS</p>
-            <p style="width: 33.33%; margin: 0.3em; text-align: center;">{{anfetamina}}</p>
+            <p style="width: 33.33%; margin: 0.3em; padding-bottom: 3px; text-align: center;">{{anfetamina}}</p>
             <p style="width: 33.33%; margin: 0.3em; text-align: right;">NEGATIVO</p>
             <div style="content: ''; position: absolute; left: 0; right: 0; bottom: 0.5em; height: 2px; background: #000;">
             </div>
@@ -52,7 +53,7 @@
         <div
             style="display: flex; flex-direction: row; justify-content: space-between; font-size: 14px; border-bottom: 1px solid #000; width: 100%;  position: relative;">
             <p style="width: 33.33%; margin: 0.3em; text-align: left;">METANFETAMINAS</p>
-            <p style="width: 33.33%; margin: 0.3em; text-align: center;">{{metanfetamina}}</p>
+            <p style="width: 33.33%; margin: 0.3em; padding-bottom: 3px; text-align: center;">{{metanfetamina}}</p>
             <p style="width: 33.33%; margin: 0.3em; text-align: right;">NEGATIVO</p>
             <div style="content: ''; position: absolute; left: 0; right: 0; bottom: 0.5em; height: 2px; background: #000;">
             </div>
@@ -60,7 +61,7 @@
         <div
             style="display: flex; flex-direction: row; justify-content: space-between; font-size: 14px; border-bottom: 1px solid #000; width: 100%;  position: relative;">
             <p style="width: 33.33%; margin: 0.3em; text-align: left;">OPIOIDES</p>
-            <p style="width: 33.33%; margin: 0.3em; text-align: center;">{{opioides}}</p>
+            <p style="width: 33.33%; margin: 0.3em; padding-bottom: 3px; text-align: center;">{{opioides}}</p>
             <p style="width: 33.33%; margin: 0.3em; text-align: right;">NEGATIVO</p>
             <div style="content: ''; position: absolute; left: 0; right: 0; bottom: 0.5em; height: 2px; background: #000;">
             </div>
@@ -68,7 +69,7 @@
         <div
             style="display: flex; flex-direction: row; justify-content: space-between; font-size: 14px; border-bottom: 1px solid #000; width: 100%;  position: relative;">
             <p style="width: 33.33%; margin: 0.3em; text-align: left;">CANNABIS (THC)</p>
-            <p style="width: 33.33%; margin: 0.3em; text-align: center;">{{cannabis}}</p>
+            <p style="width: 33.33%; margin: 0.3em; padding-bottom: 3px; text-align: center;">{{cannabis}}</p>
             <p style="width: 33.33%; margin: 0.3em; text-align: right;">NEGATIVO</p>
             <div style="content: ''; position: absolute; left: 0; right: 0; bottom: 0.5em; height: 2px; background: #000;">
             </div>
@@ -79,10 +80,11 @@
     
     <div
         style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; margin-top: 5em;">
-        <p style="margin: -0.1em; text-align: center;">Enf. Leticia Franco Rojas</p>
-        <p style="margin: -0.1em; text-align: center;">Ced. Profesional: 10874795</p>
-        <p style="margin: -0.1em; text-align: center;">Enfermera del Centro Comunitario de Salud Mental y Adicciones</p>
-        <p style="margin: -0.1em; text-align: center;">Trinidad de Viguera</p>
+        <p style="margin: -0.1em; text-align: center;">Q.F.B. Eunice Ordaz Díaz</p>
+        <p style="margin: -0.1em; text-align: center;">Ced. Profesional: 8204125</p>
+        <p style="margin: -0.1em; text-align: center;">Centro de Patología Clínica</p>
+        <p style="margin: -0.1em; text-align: center;">UNSIS</p>
+        <p style="margin: -0.1em; text-align: center;">Miahuatlán de Porfirio Díaz, Oax.</p>
     </div>
 
 
