@@ -5,7 +5,10 @@ import { logger } from 'hono/logger';
 import dashboardRoutes from '@modules/dashboard/routes';
 
 import { cors } from 'hono/cors';
-import { compress } from 'hono/compress';
+
+// INSERT INTO cuenta ( nombre, usuario, clave ) VALUES(
+//   'Jared Galicia', 'jared', '$argon2id$v=19$m=65536,t=2,p=1$tEDI2nzwlU8vVsTw4YDsi/89OJs2rscp5EJIw4XrjIs$HSwaOFLw52TtnMBtn78mGNlKfljLYBKcq0S6DnuqSpQ'
+// );
 
 // Aplicación Hono para manejar rutas
 const app = new Hono();

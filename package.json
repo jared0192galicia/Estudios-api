@@ -10,7 +10,8 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "dev": "bun run src/index.ts"
+    "dev": "bun run src/index.ts",
+    "start": "bun src/index.ts"
   },
   "dependencies": {
     "chalk": "^5.4.1",
