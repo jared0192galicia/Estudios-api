@@ -45,7 +45,7 @@ export async function createController(c: any) {
 
     const existingUser = await queryGetAccoutByEmail(username);
 
-    if (existingUser) return c.json({ error: 'El usuario ya existe' }, 400);
+    if (existingUser) return c.json({ error: 'El usuario ya existe' }, 409);
 
     const hash: string = await Bun.password.hash(password);
 
